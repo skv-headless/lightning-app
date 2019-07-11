@@ -5,6 +5,7 @@ import { action } from '@storybook/addon-actions';
 import sinon from 'sinon';
 import { Store } from '../src/store';
 import NavAction from '../src/action/nav';
+import NavActionMobile from '../src/action/nav-mobile';
 import IpcAction from '../src/action/ipc';
 import GrpcAction from '../src/action/grpc';
 import InfoAction from '../src/action/info';
@@ -91,6 +92,7 @@ import RestoreSeedMobile from '../src/view/restore-seed-mobile';
 const store = new Store();
 store.init();
 const nav = sinon.createStubInstance(NavAction);
+const navMobile = sinon.createStubInstance(NavActionMobile);
 const db = sinon.createStubInstance(AppStorage);
 const ipc = sinon.createStubInstance(IpcAction);
 const grpc = sinon.createStubInstance(GrpcAction);
@@ -131,14 +133,14 @@ storiesOf('Screens', module)
   .add('Select Seed', () => (
     <SelectSeed store={store} wallet={wallet} setting={setting} />
   ))
-  .add('Seed Intro (Mobile)', () => <SeedIntro nav={nav} />)
+  .add('Seed Intro (Mobile)', () => <SeedIntro nav={navMobile} />)
   .add('Seed', () => <Seed store={store} wallet={wallet} />)
   .add('Seed (Mobile)', () => <SeedMobile store={store} wallet={wallet} />)
   .add('Seed Verify', () => (
     <SeedVerify store={store} nav={nav} wallet={wallet} />
   ))
   .add('Seed Verify (Mobile)', () => (
-    <SeedVerifyMobile store={store} nav={nav} wallet={wallet} />
+    <SeedVerifyMobile store={store} nav={navMobile} wallet={wallet} />
   ))
   .add('Restore Wallet: Seed', () => (
     <RestoreSeed store={store} wallet={wallet} />
@@ -155,7 +157,7 @@ storiesOf('Screens', module)
     <SetPasswordConfirm store={store} wallet={wallet} />
   ))
   .add('Set PIN (Mobile)', () => (
-    <SetPinMobile store={store} auth={auth} nav={nav} />
+    <SetPinMobile store={store} auth={auth} nav={navMobile} />
   ))
   .add('Set PIN Confirm (Mobile)', () => (
     <SetPinConfirmMobile store={store} auth={auth} />
@@ -173,7 +175,7 @@ storiesOf('Screens', module)
   ))
   .add('Reset Password - Saved', () => <ResetPasswordSaved nav={nav} />)
   .add('Reset PIN - Current (Mobile)', () => (
-    <ResetPinCurrent store={store} auth={auth} nav={nav} />
+    <ResetPinCurrent store={store} auth={auth} nav={navMobile} />
   ))
   .add('Reset PIN - New (Mobile)', () => (
     <ResetPinNew store={store} auth={auth} />
@@ -181,7 +183,7 @@ storiesOf('Screens', module)
   .add('Reset PIN - Confirm New (Mobile)', () => (
     <ResetPinConfirm store={store} auth={auth} />
   ))
-  .add('Reset PIN - Saved (Mobile)', () => <ResetPinSaved nav={nav} />)
+  .add('Reset PIN - Saved (Mobile)', () => <ResetPinSaved nav={navMobile} />)
   .add('New Address', () => (
     <NewAddress store={store} invoice={invoice} info={info} />
   ))
@@ -216,24 +218,28 @@ storiesOf('Screens', module)
   ))
   .add('Notifications', () => <Notification store={store} nav={nav} />)
   .add('Notifications (Mobile)', () => (
-    <NotificationMobile store={store} nav={nav} />
+    <NotificationMobile store={store} nav={navMobile} />
   ))
   .add('CLI', () => <CLI store={store} nav={nav} />)
   .add('Transactions', () => (
     <Transaction store={store} transaction={transaction} nav={nav} />
   ))
   .add('Transactions (Mobile)', () => (
-    <TransactionMobile store={store} transaction={transaction} nav={nav} />
+    <TransactionMobile
+      store={store}
+      transaction={transaction}
+      nav={navMobile}
+    />
   ))
   .add('Transaction Details', () => (
     <TransactionDetail store={store} nav={nav} />
   ))
   .add('Transaction Details (Mobile)', () => (
-    <TransactionDetailMobile store={store} nav={nav} />
+    <TransactionDetailMobile store={store} nav={navMobile} />
   ))
   .add('Channels', () => <Channel store={store} channel={channel} nav={nav} />)
   .add('Channels (Mobile)', () => (
-    <ChannelMobile store={store} channel={channel} nav={nav} />
+    <ChannelMobile store={store} channel={channel} nav={navMobile} />
   ))
   .add('Channels (Opening)', () => (
     <Channel store={{ computedChannels: [] }} channel={channel} nav={nav} />
@@ -242,12 +248,12 @@ storiesOf('Screens', module)
     <ChannelMobile
       store={{ computedChannels: [] }}
       channel={channel}
-      nav={nav}
+      nav={navMobile}
     />
   ))
   .add('Channel Details', () => <ChannelDetail store={store} nav={nav} />)
   .add('Channel Details (Mobile)', () => (
-    <ChannelDetailMobile store={store} nav={nav} />
+    <ChannelDetailMobile store={store} nav={navMobile} />
   ))
   .add('Channel Delete', () => (
     <ChannelDelete store={store} channel={channel} nav={nav} />
@@ -256,54 +262,58 @@ storiesOf('Screens', module)
     <ChannelCreate store={store} channel={channel} nav={nav} />
   ))
   .add('Channel Create (Mobile)', () => (
-    <ChannelCreateMobile store={store} channel={channel} nav={nav} />
+    <ChannelCreateMobile store={store} channel={channel} nav={navMobile} />
   ))
   .add('Deposit', () => <Deposit store={store} invoice={invoice} nav={nav} />)
   .add('Deposit (Mobile)', () => (
-    <DepositMobile store={store} invoice={invoice} nav={nav} />
+    <DepositMobile store={store} invoice={invoice} nav={navMobile} />
   ))
   .add('Payment', () => <Payment store={store} payment={payment} nav={nav} />)
   .add('Pay Lightning Confirm', () => (
     <PayLightningConfirm store={store} payment={payment} nav={nav} />
   ))
   .add('Pay Lightning Confirm (Mobile)', () => (
-    <PayLightningConfirmMobile store={store} payment={payment} nav={nav} />
+    <PayLightningConfirmMobile
+      store={store}
+      payment={payment}
+      nav={navMobile}
+    />
   ))
   .add('Pay Lightning Done', () => (
     <PayLightningDone store={store} payment={payment} nav={nav} />
   ))
   .add('Pay Lightning Done (Mobile)', () => (
-    <PayLightningDoneMobile store={store} payment={payment} nav={nav} />
+    <PayLightningDoneMobile store={store} payment={payment} nav={navMobile} />
   ))
   .add('Payment Failed', () => <PaymentFailed channel={channel} nav={nav} />)
   .add('Payment Failed (Mobile)', () => (
-    <PaymentFailedMobile channel={channel} nav={nav} />
+    <PaymentFailedMobile channel={channel} nav={navMobile} />
   ))
   .add('Pay Bitcoin', () => (
     <PayBitcoin store={store} payment={payment} nav={nav} />
   ))
   .add('Pay Bitcoin (Mobile)', () => (
-    <PayBitcoinMobile store={store} payment={payment} nav={nav} />
+    <PayBitcoinMobile store={store} payment={payment} nav={navMobile} />
   ))
   .add('Pay Bitcoin Confirm', () => (
     <PayBitcoinConfirm store={store} payment={payment} nav={nav} />
   ))
   .add('Pay Bitcoin Confirm (Mobile)', () => (
-    <PayBitcoinConfirmMobile store={store} payment={payment} nav={nav} />
+    <PayBitcoinConfirmMobile store={store} payment={payment} nav={navMobile} />
   ))
   .add('Pay Bitcoin Done', () => <PayBitcoinDone payment={payment} nav={nav} />)
   .add('Pay Bitcoin Done (Mobile)', () => (
-    <PayBitcoinDoneMobile payment={payment} nav={nav} />
+    <PayBitcoinDoneMobile payment={payment} nav={navMobile} />
   ))
   .add('Invoice', () => <Invoice store={store} invoice={invoice} nav={nav} />)
   .add('Invoice (Mobile)', () => (
-    <InvoiceMobile store={store} invoice={invoice} nav={nav} />
+    <InvoiceMobile store={store} invoice={invoice} nav={navMobile} />
   ))
   .add('Invoice QR', () => (
     <InvoiceQR store={store} invoice={invoice} nav={nav} />
   ))
   .add('Invoice QR (Mobile)', () => (
-    <InvoiceQRMobile store={store} invoice={invoice} nav={nav} />
+    <InvoiceQRMobile store={store} invoice={invoice} nav={navMobile} />
   ));
 
 // set some dummy data
