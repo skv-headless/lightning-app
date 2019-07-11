@@ -18,6 +18,7 @@ import SetPinConfirmView from './set-pin-confirm-mobile';
 import SeedSuccessView from './seed-success-mobile';
 import RestoreSeedView from './restore-seed-mobile';
 import NewAddressView from './new-address-mobile';
+import SelectAutopilotView from './select-atpl-mobile';
 
 import PinView from './pin-mobile';
 import ResetPinCurrentView from './reset-pin-current-mobile';
@@ -92,7 +93,11 @@ const SeedSuccess = () => <SeedSuccessView wallet={wallet} />;
 const RestoreSeed = () => <RestoreSeedView store={store} wallet={wallet} />;
 
 const NewAddress = () => (
-  <NewAddressView store={store} invoice={invoice} info={info} />
+  <NewAddressView store={store} invoice={invoice} nav={nav} />
+);
+
+const SelectAutopilot = () => (
+  <SelectAutopilotView store={store} autopilot={autopilot} info={info} />
 );
 
 const Password = () => <PinView store={store} auth={auth} />;
@@ -211,6 +216,7 @@ const MainStack = createStackNavigator(
     SeedSuccess,
     RestoreSeed,
     NewAddress,
+    SelectAutopilot,
     Password,
     LoaderSyncing,
     Home,
