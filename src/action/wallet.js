@@ -225,6 +225,9 @@ class WalletAction {
       seedMnemonic: this._store.settings.restoring
         ? this._store.restoreSeedMnemonic.toJSON()
         : this._store.seedMnemonic.toJSON(),
+      channelBackup: this._store.settings.restoring
+        ? this._store.channelBackup
+        : '',
     });
   }
 
@@ -264,13 +267,19 @@ class WalletAction {
    * @param  {number} options.recoveryWindow The number of addresses to recover
    * @return {Promise<undefined>}
    */
-  async initWallet({ walletPassword, seedMnemonic, recoveryWindow = 0 }) {
+  async initWallet({
+    walletPassword,
+    seedMnemonic,
+    recoveryWindow = 0,
+    channelBackup = {},
+  }) {
     try {
       await this.deleteDB();
       await this._grpc.sendUnlockerCommand('InitWallet', {
         walletPassword: toBuffer(walletPassword),
         cipherSeedMnemonic: seedMnemonic,
         recoveryWindow: recoveryWindow,
+        channelBackups: channelBackup,
       });
       this._store.walletUnlocked = true;
       this._nav.goSeedSuccess();
@@ -352,6 +361,9 @@ class WalletAction {
   initRestoreWallet() {
     this._store.restoreSeedMnemonic = Array(24).fill('');
     this._store.wallet.restoreIndex = 0;
+    if (this._file) {
+      this._file.checkForChannelBackup();
+    }
     this._nav.goRestoreSeed();
   }
 

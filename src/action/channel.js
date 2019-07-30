@@ -7,11 +7,12 @@ import { toSatoshis, poll, getTimeTilAvailable } from '../helper';
 import * as log from './log';
 
 class ChannelAction {
-  constructor(store, grpc, nav, notification) {
+  constructor(store, grpc, nav, notification, file) {
     this._store = store;
     this._grpc = grpc;
     this._nav = nav;
     this._notification = notification;
+    this._file = file;
   }
 
   //
@@ -69,6 +70,23 @@ class ChannelAction {
   select({ item }) {
     this._store.selectedChannel = item;
     this._nav.goChannelDetail();
+  }
+
+  /**
+   * Subscribe to channel backup updates. If a new one comes in, back up the
+   * latest update to iCloud.
+   * @return {Promise<undefined>}
+   */
+  async subscribeChanBackups() {
+    const stream = this._grpc.sendStreamCommand('subscribeChannelBackups');
+    await new Promise((resolve, reject) => {
+      stream.on('data', () => this._file.backUpChannelsFromFS());
+      stream.on('end', resolve);
+      stream.on('error', reject);
+      stream.on('status', status =>
+        log.info(`Channel backup status: ${status}`)
+      );
+    });
   }
 
   /**

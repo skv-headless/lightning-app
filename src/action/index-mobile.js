@@ -20,6 +20,7 @@ import * as Random from 'expo-random';
 import * as LocalAuthentication from 'expo-local-authentication';
 import * as Keychain from 'react-native-keychain';
 import RNFS from 'react-native-fs';
+import RNICloudStore from 'react-native-icloudstore';
 import { NavigationActions, StackActions } from 'react-navigation';
 import { nap } from '../helper';
 import store from '../store';
@@ -49,14 +50,14 @@ store.init(); // initialize computed values
 export const db = new AppStorage(store, AsyncStorage);
 export const grpc = new GrpcAction(store, NativeModules, NativeEventEmitter);
 export const ipc = new IpcAction(grpc);
-export const file = new FileAction(store, RNFS, Share);
+export const file = new FileAction(store, RNFS, Share, RNICloudStore);
 export const log = new LogAction(store, ipc, false);
 export const nav = new NavAction(store, NavigationActions, StackActions);
 export const notify = new NotificationAction(store, nav);
 export const wallet = new WalletAction(store, grpc, db, nav, notify, file);
 export const info = new InfoAction(store, grpc, nav, notify);
 export const transaction = new TransactionAction(store, grpc, nav, notify);
-export const channel = new ChannelAction(store, grpc, nav, notify);
+export const channel = new ChannelAction(store, grpc, nav, notify, file);
 export const invoice = new InvoiceAction(store, grpc, nav, notify, Clipboard);
 export const payment = new PaymentAction(store, grpc, nav, notify, Clipboard);
 export const setting = new SettingAction(store, wallet, db, ipc);
@@ -116,6 +117,7 @@ when(
     wallet.pollBalances();
     wallet.pollExchangeRate();
     channel.pollChannels();
+    channel.subscribeChanBackups();
     transaction.update();
     info.pollInfo();
   }
@@ -123,12 +125,14 @@ when(
 
 /**
  * Initialize autopilot after syncing is finished and the grpc client
- * is ready
+ * is ready. Once network is set, also save initial channel backup to
+ * iCloud.
  */
 when(
   () => store.syncedToChain && store.network && store.autopilotReady,
   async () => {
     await nap();
     autopilot.init();
+    file.backUpChannelsFromFS();
   }
 );
