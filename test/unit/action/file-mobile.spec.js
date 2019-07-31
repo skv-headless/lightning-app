@@ -28,9 +28,9 @@ describe('Action File Mobile Unit Tests', () => {
     sandbox.restore();
   });
 
-  describe('getLndDir()', () => {
+  describe('get lndDir()', () => {
     it('should get lnd directory', () => {
-      const path = file.getLndDir();
+      const path = file.lndDir;
       expect(path, 'to equal', '/foo/bar');
     });
   });
