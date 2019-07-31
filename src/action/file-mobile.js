@@ -15,9 +15,13 @@ class FileAction {
    * Gets the path of the lnd directory where `logs` and `data` are stored.
    * @return {string}
    */
-  getLndDir() {
+  get lndDir() {
     return this._FS.DocumentDirectoryPath;
   }
+
+  //
+  // Log file actions
+  //
 
   /**
    * Retrieves the entire lnd log file contents as a string.
@@ -25,7 +29,7 @@ class FileAction {
    */
   async readLogs() {
     const { network } = this._store;
-    const path = `${this.getLndDir()}/logs/bitcoin/${network}/lnd.log`;
+    const path = `${this.lndDir}/logs/bitcoin/${network}/lnd.log`;
     return this._FS.readFile(path, 'utf8');
   }
 
@@ -45,13 +49,17 @@ class FileAction {
     }
   }
 
+  //
+  // Wallet DB actions
+  //
+
   /**
    * Delete the wallet.db file. This allows the user to restore their wallet
    * (including channel state) from the seed if they've forgotten the pin.
    * @return {Promise<undefined>}
    */
   async deleteWalletDB(network) {
-    const path = `${this.getLndDir()}/data/chain/bitcoin/${network}/wallet.db`;
+    const path = `${this.lndDir}/data/chain/bitcoin/${network}/wallet.db`;
     try {
       await this._FS.unlink(path);
     } catch (err) {
