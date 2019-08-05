@@ -225,7 +225,7 @@ class AuthAction {
     await this._setToKeyStore(PASS, newPass);
     this._store.wallet.newPassword = newPass;
     this._store.wallet.passwordVerify = newPass;
-    await this._wallet.checkNewPassword();
+    await this._wallet.checkNewPasswordConfirmation();
   }
 
   /**
